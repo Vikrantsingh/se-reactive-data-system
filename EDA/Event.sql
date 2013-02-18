@@ -10,7 +10,8 @@ SELECT eda;
 DROP TABLE IF EXISTS events;
 CREATE TABLE events{
 	event_id int(10) unsigned NOT NULL,
-	event_type varchar(10) unsigned NOT NULL,
+	event_name varchar(100) NOT NULL,
+	event_type varchar(10)  NOT NULL,
 	PRIMARY KEY (event_id) 
 }ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
