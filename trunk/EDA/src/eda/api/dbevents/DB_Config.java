@@ -156,6 +156,11 @@ public class DB_Config {
 		}
 	}
 	//function to create the col_access table for storing the columns details
+	/**
+	 * @param con Connection Object OF Database
+	 * @param prefix User Defined Prefix
+	 * @category				It is defined by the user
+	 */
 	private static void create_DB_Col_access_Table(Connection con, String prefix) {
 		// TODO Auto-generated method stub
 		Statement statement = null;
@@ -229,6 +234,12 @@ public class DB_Config {
 
 
 	// function to create database event information table
+	/**
+	 * @param con Connection object
+	 * @param prefix used defined prefix
+	 * @author Simham
+	 * used to create the Database Event table with the prefix specified by user and is run only once
+	 */
 	private static void create_DB_Event_Table(Connection con,String prefix) {
 		// TODO Auto-generated method stub
 		Statement statement = null;
@@ -240,8 +251,8 @@ public class DB_Config {
 					"event_id int(10) unsigned NOT NULL,"+
 					"db_event_id int(10) unsigned NOT NULL,"+
 					"event_type varchar(20) NOT NULL,"+
-					"status int(10) unsigned NOT NULL,"+
-					"table_name varchar(20) NOT NULL,"+
+					"status int(1) unsigned NOT NULL,"+
+					"table_name varchar(50) NOT NULL,"+
 					"PRIMARY KEY (db_event_id),"+
 					"FOREIGN KEY (event_id) REFERENCES events(event_id))"+
 					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");

@@ -1,6 +1,6 @@
 package eda.api.dbevents;
 
-public class Events {
+public class Events extends DB_Config{
 
 	private String event_type;
 	private String event_name;

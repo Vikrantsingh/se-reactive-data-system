@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class DB_Events extends Events {
 	/* Variables for storing the database related values */
 	private String table_name;
+	private int status;
 	
    /* Arraylist for storing multivalued variables */
 	
@@ -20,9 +21,7 @@ public class DB_Events extends Events {
 	private ArrayList<String> column_expr;
 	private ArrayList<String> row_filter;
 	private ArrayList<String> reaction;
-	
-	private DB_Config db=new DB_Config();
-	
+		
 	/**
 	 * @return the table_name
 	 */
@@ -95,5 +94,46 @@ public class DB_Events extends Events {
 	public void setReaction(ArrayList<String> reaction) {
 		this.reaction = reaction;
 	}
+	
+	
+	/**
+	 * @return the status
+	 */
+	public int getStatus() {
+		return status;
+	}
+	/**
+	 * @param status the status to set
+	 */
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	/**
+	 * @param event_name the event_name to set, table_name the table_name to set
+	 * These are just for transient stored of the event details 
+	 */
+	public void register_Event(String event_name,String table_name){
+		
+		setEvent_name(event_name);
+		setEvent_type("DB");
+		setTable_name(table_name);
+		setStatus(0);
+		System.out.println("Stored the event name, event type, table name ");
+	}
+	
+	/**
+	 * @param Column_name
+	 * @param Column_value
+	 * @param Column_expression
+	 */
+	public void  event_Parameters(ArrayList<String> Column_name,ArrayList<String> Column_value, ArrayList<String> Column_expression){
+		
+		setColumn_name(Column_name);
+		setColumn_expr(Column_expression);
+		setColumn_value(Column_value);
+		System.out.println("Stored the column name,Column value,column expression ");
+				
+	}
+	
 	
 }
