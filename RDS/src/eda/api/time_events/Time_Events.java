@@ -2,7 +2,6 @@ package eda.api.time_events;
 
 import java.util.Date;
 import eda.api.dbevents.*;
-import eda.api.event.Events;
 
 public class Time_Events extends Events {
 	
