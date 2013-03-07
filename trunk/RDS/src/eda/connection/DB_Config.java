@@ -1,4 +1,4 @@
-package eda.api.event;
+package eda.connection;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -17,7 +17,7 @@ public class DB_Config {
 	private  String host_name;
 	private String user_name;
 	private String password;
-	protected static Connection conn;
+	protected Connection conn;
 	protected DatabaseMetaData dmd;
 	protected ResultSetMetaData rsmd = null;
 	protected ResultSet rs;
@@ -123,6 +123,40 @@ public class DB_Config {
 	 */
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
+	}
+
+	//function used for establishing the connection and defining the database name and table prefix
+	public Connection registerDB() {
+		Connection con = null;
+		//DB_Config db=new DB_Config();
+		try{
+			try {
+				Class.forName("com.mysql.jdbc.Driver");
+			} catch (ClassNotFoundException ex) {
+				System.out.println("Class Not found exception"+ex);
+			}
+			String connectionUrl = "jdbc:mysql://" +getHost_name()
+					+ ":" + getPort_no() + "/"
+					+ getDb_name()
+					+ "?zeroDateTimeBehavior=convertToNull";
+			System.out.println(connectionUrl);
+			con = DriverManager.getConnection(connectionUrl,
+					getUser_name() ,getPassword());
+		} catch (SQLException ex) {
+			System.out.println("Cannot connect to database"+ex);
+		}
+		activeConnections++;
+	//	System.out.println("Connection Successfully Established");
+		//System.out.println("Total active connections are:"+activeConnections);
+/*		create_Event_Table(con,prefix);
+		create_DB_Event_Table(con,prefix);
+		create_DB_rowfilter(con,prefix);
+		create_DB_Col_access_Table(con,prefix);
+		create_DB_Col_Val(con,prefix);
+		create_TIME_Event_Table(con,prefix);*/
+
+
+		return con;
 	}
 
 	//function used for establishing the connection and defining the database name and table prefix

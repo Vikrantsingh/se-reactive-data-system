@@ -1,5 +1,7 @@
 package eda.api.event;
 
+import eda.connection.DB_Config;
+
 
 public class Events extends DB_Config{
 	
