@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import eda.api.event.DB_Config;
+import eda.connection.DB_Config;
 import eda.exception.GenericException;
 
 public class FunctionReaction extends Reaction {

@@ -3,8 +3,8 @@
  */
 package eda.api.dbevents;
 
-import eda.api.event.DB_Config;
 import eda.api.event.Events;
+import eda.connection.DB_Config;
 import eda.exception.*;
 
 import java.sql.Connection;
