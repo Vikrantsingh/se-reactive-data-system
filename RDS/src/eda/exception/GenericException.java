@@ -8,6 +8,10 @@ package eda.exception;
  */
 public class GenericException extends Exception{
 		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String msg;
 	private int ExceptionNo;
 	 
