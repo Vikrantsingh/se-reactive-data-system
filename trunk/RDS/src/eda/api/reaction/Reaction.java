@@ -8,6 +8,7 @@ public class Reaction {
 	private String sql_query;
 	private String function_name;
 	
+	
 	/**
 	 * @return the reaction_id
 	 */
