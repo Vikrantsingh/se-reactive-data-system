@@ -128,7 +128,8 @@ public class EventChecker {
 				}
 				String createQuery = "select * from `"
 						+ rs.getString("table_name") + "` where "
-						+ rs.getString("constraints");
+						+ rs.getString("constraints")
+						+ " and event_detected=0";
 				PreparedStatement ps = econ.prepareStatement(createQuery);
 				// System.out.println("query="+ps.toString());
 				ResultSet res = ps.executeQuery();
@@ -136,11 +137,16 @@ public class EventChecker {
 								 * It means event occurred now performs
 								 * respective reaction
 								 */
-
+					//change status
+					createQuery = "update "+ rs.getString("table_name") +" set event_detected=1 where id="+res.getInt("id");
+					PreparedStatement ps1 = econ.prepareStatement(createQuery);
+					int s = ps1.executeUpdate(createQuery);
+					
 					// check reaction type
 
 					// if db reaction then,
 
+					
 					if (rs.getString("reaction_type").equals("DB")) {
 						DBModel db = new DBModel(rs.getString("database_name"),
 								"", Integer.parseInt(rs.getString("port")),
@@ -173,11 +179,11 @@ public class EventChecker {
 					}
 					System.out.println("Event Occurred"
 							+ rs.getString("event_id"));
-					String querySetEventOccurred = "update db_event set status=1 where event_id="
-							+ rs.getString("event_id");
-					//System.out.println(querySetEventOccurred);
-					pstmt = con.prepareStatement(querySetEventOccurred);
-					pstmt.executeUpdate();
+//					String querySetEventOccurred = "update db_event set status=1 where event_id="
+//							+ rs.getString("event_id");
+//					//System.out.println(querySetEventOccurred);
+//					pstmt = con.prepareStatement(querySetEventOccurred);
+//					pstmt.executeUpdate();
 
 				}
 				res.close();
