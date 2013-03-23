@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 17, 2013 at 02:13 PM
+-- Generation Time: Mar 23, 2013 at 11:22 AM
 -- Server version: 5.5.25
 -- PHP Version: 5.3.9
 
@@ -29,22 +29,24 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `institute_branch` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `id_login` int(10) NOT NULL,
-  `branch_name` varchar(50) NOT NULL,
+  `degree` varchar(100) DEFAULT NULL,
+  `specialization` varchar(50) NOT NULL,
   `description` varchar(500) NOT NULL,
   `seats` varchar(50) NOT NULL,
   `event_detected` int(10) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `FK_institute_branch_institute_profile` (`id_login`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `institute_branch`
 --
 
-INSERT INTO `institute_branch` (`id`, `id_login`, `branch_name`, `description`, `seats`, `event_detected`) VALUES
-(1, 1, 'ECE', 'AWesofghsfgme', '12', 0),
-(2, 1, 'CSE', 'sdfsd', '345', 0),
-(3, 1, 'CSE', '', '', 0);
+INSERT INTO `institute_branch` (`id`, `id_login`, `degree`, `specialization`, `description`, `seats`, `event_detected`) VALUES
+(1, 1, NULL, 'ECE', 'AWesofghsfgme', '12', 0),
+(2, 1, NULL, 'CSE', 'sdfsd', '345', 0),
+(3, 1, NULL, 'CSE', '', '', 0),
+(4, 1, 'B.Tech', 'Computer Science Engineering', 'feee', '2', 0);
 
 -- --------------------------------------------------------
 
@@ -85,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `login` (
   `status` varchar(50) NOT NULL DEFAULT 'new',
   `event_detected` int(10) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `login`
@@ -94,8 +96,23 @@ CREATE TABLE IF NOT EXISTS `login` (
 INSERT INTO `login` (`id`, `username`, `password`, `lastlogin`, `type`, `status`, `event_detected`) VALUES
 (1, 'pridhvi.bittu@gmail.com', '12345', '2013-03-17 04:45:10', 'institute', 'verified', 0),
 (2, 'vikrantsingh.it@gmail.com', 'aaaaa', '2013-03-17 05:44:32', 'student', 'verified', 1),
-(3, 'vikrant.bisen@gmail.com', 'aaaaa', '2013-03-17 07:15:27', 'student', 'new', 1),
-(4, 'simaham007@gmail.com', '12345', '2013-03-17 07:43:33', 'student', 'new', 1);
+(3, 'vsr1312@gmail.com', 'aaaaa', '2013-03-18 04:23:21', 'student', 'new', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prerequisites`
+--
+
+CREATE TABLE IF NOT EXISTS `prerequisites` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `branch_id` int(10) DEFAULT NULL,
+  `degree` int(10) DEFAULT NULL,
+  `specialisation` int(10) DEFAULT NULL,
+  `percentage` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK__institute_branch` (`branch_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -184,6 +201,12 @@ ALTER TABLE `institute_branch`
 --
 ALTER TABLE `institute_profile`
   ADD CONSTRAINT `FK_institute_profile_login` FOREIGN KEY (`institute_id`) REFERENCES `login` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `prerequisites`
+--
+ALTER TABLE `prerequisites`
+  ADD CONSTRAINT `FK__institute_branch` FOREIGN KEY (`branch_id`) REFERENCES `institute_branch` (`id`);
 
 --
 -- Constraints for table `student_education`
