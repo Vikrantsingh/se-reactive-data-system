@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2013 at 10:43 AM
+-- Generation Time: Apr 02, 2013 at 11:10 PM
 -- Server version: 5.5.25
 -- PHP Version: 5.3.9
 
@@ -114,6 +114,7 @@ CREATE TABLE IF NOT EXISTS `group_participants_enroll_courses` (
   `participant_id` int(10) DEFAULT NULL,
   `group_id` int(10) DEFAULT NULL,
   `branch_id` int(10) DEFAULT NULL,
+  `group_seats_available` int(10) DEFAULT NULL,
   PRIMARY KEY (`part_stream_id`),
   KEY `FK_participants_stream_in_group_admission_group` (`group_id`),
   KEY `FK_participants_stream_in_group_admission_institute_profile` (`participant_id`),
@@ -124,9 +125,9 @@ CREATE TABLE IF NOT EXISTS `group_participants_enroll_courses` (
 -- Dumping data for table `group_participants_enroll_courses`
 --
 
-INSERT INTO `group_participants_enroll_courses` (`part_stream_id`, `participant_id`, `group_id`, `branch_id`) VALUES
-(7, 5, 6, 7),
-(8, 6, 6, 8);
+INSERT INTO `group_participants_enroll_courses` (`part_stream_id`, `participant_id`, `group_id`, `branch_id`, `group_seats_available`) VALUES
+(7, 5, 6, 7, 114),
+(8, 6, 6, 8, 50);
 
 -- --------------------------------------------------------
 
@@ -178,10 +179,19 @@ CREATE TABLE IF NOT EXISTS `group_seat_allocation` (
   `seat_allocation_id` int(10) NOT NULL AUTO_INCREMENT,
   `stud_inst_prefer_id` int(10) DEFAULT NULL,
   `round_id` int(10) DEFAULT NULL,
-  `acceptance_status` varchar(50) DEFAULT NULL COMMENT 'accepted/rejected/pending',
+  `acceptance_status` varchar(50) DEFAULT 'pending' COMMENT 'accepted/rejected/pending',
   PRIMARY KEY (`seat_allocation_id`),
   KEY `FK__student_institute_preferences` (`stud_inst_prefer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+
+--
+-- Dumping data for table `group_seat_allocation`
+--
+
+INSERT INTO `group_seat_allocation` (`seat_allocation_id`, `stud_inst_prefer_id`, `round_id`, `acceptance_status`) VALUES
+(4, 6, NULL, 'pending'),
+(5, 2, NULL, 'pending'),
+(6, 6, NULL, 'pending');
 
 -- --------------------------------------------------------
 

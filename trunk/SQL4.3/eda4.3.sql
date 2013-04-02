@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2013 at 10:44 AM
+-- Generation Time: Apr 02, 2013 at 11:10 PM
 -- Server version: 5.5.25
 -- PHP Version: 5.3.9
 
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `event_type` varchar(10) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=53 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=58 ;
 
 --
 -- Dumping data for table `events`
@@ -144,7 +144,9 @@ CREATE TABLE IF NOT EXISTS `events` (
 INSERT INTO `events` (`event_id`, `event_name`, `event_type`, `status`) VALUES
 (48, 'loginAction', 'DB', 0),
 (51, 'insertGroupPaymentStatusPending', 'DB', 0),
-(52, 'setApplicationStatusApproved', 'DB', 0);
+(52, 'setApplicationStatusApproved', 'DB', 0),
+(56, 'hellotime', 'TIME', 0),
+(57, 'hellotime', 'TIME', 0);
 
 -- --------------------------------------------------------
 
@@ -176,7 +178,7 @@ CREATE TABLE IF NOT EXISTS `reaction` (
   `function_name` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`reaction_id`),
   KEY `FK_reaction_events` (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
 
 --
 -- Dumping data for table `reaction`
@@ -185,7 +187,9 @@ CREATE TABLE IF NOT EXISTS `reaction` (
 INSERT INTO `reaction` (`reaction_id`, `event_id`, `reaction_name`, `reaction_type`, `sql_query`, `function_name`) VALUES
 (15, 48, 'sendmail', 'FUNCTION', '', 'app.admission.SignUp.mailConformation'),
 (19, 51, 'PaymentStatusPending', 'FUNCTION', '', 'app.admission.PaymentAction.insertGroupPaymentStatusPending'),
-(20, 52, 'ApplicationApproval', 'FUNCTION', '', 'app.admission.PaymentAction.setApplicationStatusApproved');
+(20, 52, 'ApplicationApproval', 'FUNCTION', '', 'app.admission.PaymentAction.setApplicationStatusApproved'),
+(24, 56, 'seatAllocate', 'FUNCTION', '', 'app.admission.seatAllocation.PreferencesModel.allocateSeat()'),
+(25, 57, 'seatAllocate', 'FUNCTION', '', 'app.admission.seatAllocation.PreferencesModel.allocateSeat()');
 
 -- --------------------------------------------------------
 
@@ -229,14 +233,22 @@ CREATE TABLE IF NOT EXISTS `static_func` (
 --
 
 CREATE TABLE IF NOT EXISTS `time_event` (
+  `time_event_id` int(10) NOT NULL AUTO_INCREMENT,
   `event_id` int(10) NOT NULL,
-  `time_event_id` int(10) NOT NULL,
-  `periodic` varchar(20) NOT NULL,
-  `time_assigned` time NOT NULL,
-  `date_check` date NOT NULL,
+  `time` datetime NOT NULL,
+  `occurred` int(50) NOT NULL DEFAULT '0',
+  `periodic` varchar(20) NOT NULL DEFAULT 'no',
   PRIMARY KEY (`time_event_id`),
   KEY `event_id` (`event_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `time_event`
+--
+
+INSERT INTO `time_event` (`time_event_id`, `event_id`, `time`, `occurred`, `periodic`) VALUES
+(1, 56, '2013-04-03 01:50:00', 1, 'no'),
+(2, 57, '2013-04-03 01:50:00', 1, 'no');
 
 -- --------------------------------------------------------
 
@@ -244,17 +256,19 @@ CREATE TABLE IF NOT EXISTS `time_event` (
 -- Stand-in structure for view `time_event_view_summary`
 --
 CREATE TABLE IF NOT EXISTS `time_event_view_summary` (
-`database_id` int(10)
-,`database_name` varchar(50)
-,`hostname` varchar(50)
-,`port` int(11)
-,`username` varchar(50)
-,`password` varchar(50)
-,`event_id` int(10)
-,`status` int(10)
-,`table_name` varchar(50)
-,`db_event_id` int(10)
-,`constraints` varchar(300)
+`event_id` int(10)
+,`event_name` varchar(50)
+,`event_type` varchar(10)
+,`status` int(11)
+,`time_event_id` int(10)
+,`time` datetime
+,`occurred` int(50)
+,`periodic` varchar(20)
+,`reaction_id` int(10)
+,`reaction_name` varchar(100)
+,`reaction_type` varchar(10)
+,`sql_query` varchar(200)
+,`function_name` varchar(500)
 );
 -- --------------------------------------------------------
 
@@ -272,7 +286,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `time_event_view_summary`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `time_event_view_summary` AS select `database_info`.`database_id` AS `database_id`,`database_info`.`database_name` AS `database_name`,`database_info`.`hostname` AS `hostname`,`database_info`.`port` AS `port`,`database_info`.`username` AS `username`,`database_info`.`password` AS `password`,`db_event`.`event_id` AS `event_id`,`db_event`.`status` AS `status`,`db_event`.`table_name` AS `table_name`,`row_filter`.`db_event_id` AS `db_event_id`,`row_filter`.`constraints` AS `constraints` from ((`database_info` join `db_event` on((`database_info`.`database_id` = `db_event`.`database_id`))) join `row_filter` on((`db_event`.`event_id` = `row_filter`.`db_event_id`)));
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `time_event_view_summary` AS select `events`.`event_id` AS `event_id`,`events`.`event_name` AS `event_name`,`events`.`event_type` AS `event_type`,`events`.`status` AS `status`,`time_event`.`time_event_id` AS `time_event_id`,`time_event`.`time` AS `time`,`time_event`.`occurred` AS `occurred`,`time_event`.`periodic` AS `periodic`,`reaction`.`reaction_id` AS `reaction_id`,`reaction`.`reaction_name` AS `reaction_name`,`reaction`.`reaction_type` AS `reaction_type`,`reaction`.`sql_query` AS `sql_query`,`reaction`.`function_name` AS `function_name` from ((`events` join `time_event` on((`events`.`event_id` = `time_event`.`event_id`))) join `reaction` on((`events`.`event_id` = `reaction`.`event_id`)));
 
 --
 -- Constraints for dumped tables
