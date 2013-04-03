@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2013 at 11:10 PM
+-- Generation Time: Apr 03, 2013 at 06:28 PM
 -- Server version: 5.5.25
 -- PHP Version: 5.3.9
 
@@ -36,17 +36,22 @@ CREATE TABLE IF NOT EXISTS `group_admission` (
   `description` varchar(500) DEFAULT NULL,
   `fees` int(11) DEFAULT NULL,
   `criteria` varchar(100) DEFAULT NULL,
+  `visibility` int(10) DEFAULT '0',
+  `group_apply` int(10) NOT NULL DEFAULT '1',
+  `fill_preferences` int(10) NOT NULL DEFAULT '1',
   PRIMARY KEY (`group_id`),
   KEY `FK_group_institute_profile` (`owner_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `group_admission`
 --
 
-INSERT INTO `group_admission` (`group_id`, `owner_id`, `start_date`, `end_date`, `no_of_rounds`, `title`, `description`, `fees`, `criteria`) VALUES
-(6, 5, '2013-04-21', '2013-05-21', 4, 'MTech Admission', 'MTech Admissions for IIIT''s ...', 1000, 'B.Tech'),
-(7, 6, '2013-03-15', '2013-04-30', 2, 'MTech ECE Admission', 'Description about the group', 1000, 'B.Tech');
+INSERT INTO `group_admission` (`group_id`, `owner_id`, `start_date`, `end_date`, `no_of_rounds`, `title`, `description`, `fees`, `criteria`, `visibility`, `group_apply`, `fill_preferences`) VALUES
+(6, 5, '2013-04-21', '2013-05-21', 4, 'MTech Admission', 'MTech Admissions for IIIT''s ...', 1000, 'B.Tech', 0, 1, 1),
+(7, 6, '2013-03-15', '2013-04-30', 2, 'MTech ECE Admission', 'Description about the group', 1000, 'B.Tech', 0, 1, 1),
+(8, 6, '2013-12-31', '2013-04-02', 1, 'demo', 'Description about the group', 111, '10th', 0, 1, 1),
+(9, 5, '2013-03-31', '2013-12-31', 6543, 'I MTECH', 'Description about the group', 654, '10th', 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -63,17 +68,17 @@ CREATE TABLE IF NOT EXISTS `group_application` (
   `last_updated_on` timestamp NULL DEFAULT NULL,
   `group_application_event_detected` int(10) DEFAULT '0',
   PRIMARY KEY (`group_app_id`),
+  UNIQUE KEY `my_unique_key` (`group_id`,`applicant_id`),
   KEY `FK_group_application_student_profile` (`applicant_id`),
   KEY `FK_group_application_group_admission` (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `group_application`
 --
 
 INSERT INTO `group_application` (`group_app_id`, `group_id`, `applicant_id`, `apply_timestamp`, `application_status`, `last_updated_on`, `group_application_event_detected`) VALUES
-(7, 6, 7, '2013-04-02 08:16:00', 'approved', NULL, 1),
-(8, 6, 8, '2013-04-02 08:19:19', 'approved', NULL, 1);
+(1, 9, 7, '2013-04-03 13:36:29', 'approved', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -91,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `group_participants` (
   PRIMARY KEY (`group_participants_id`),
   KEY `FK_group_paticipants_group` (`group_id`),
   KEY `FK_group_paticipants_institute_profile` (`participant_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `group_participants`
@@ -101,7 +106,10 @@ INSERT INTO `group_participants` (`group_participants_id`, `group_id`, `particip
 (9, 6, 5, '2013-04-02 07:10:44', 'accepted', NULL),
 (10, 7, 5, '2013-04-02 07:13:13', 'accepted', NULL),
 (11, 7, 5, '2013-04-02 07:13:27', 'accepted', NULL),
-(12, 6, 6, '2013-04-02 07:15:05', 'accepted', NULL);
+(12, 6, 6, '2013-04-02 07:15:05', 'accepted', NULL),
+(13, 6, 5, '2013-04-03 13:24:57', 'pending', NULL),
+(14, 9, 5, '2013-04-03 13:25:06', 'accepted', NULL),
+(15, 9, 6, '2013-04-03 13:28:03', 'accepted', NULL);
 
 -- --------------------------------------------------------
 
@@ -119,15 +127,17 @@ CREATE TABLE IF NOT EXISTS `group_participants_enroll_courses` (
   KEY `FK_participants_stream_in_group_admission_group` (`group_id`),
   KEY `FK_participants_stream_in_group_admission_institute_profile` (`participant_id`),
   KEY `FK_participants_stream_in_group_admission_institute_branch` (`branch_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `group_participants_enroll_courses`
 --
 
 INSERT INTO `group_participants_enroll_courses` (`part_stream_id`, `participant_id`, `group_id`, `branch_id`, `group_seats_available`) VALUES
-(7, 5, 6, 7, 114),
-(8, 6, 6, 8, 50);
+(7, 5, 6, 7, 100),
+(8, 6, 6, 8, 50),
+(9, 5, 9, 7, 99),
+(10, 6, 9, 9, 100);
 
 -- --------------------------------------------------------
 
@@ -144,15 +154,14 @@ CREATE TABLE IF NOT EXISTS `group_payment` (
   `group_payment_event_detected` int(10) DEFAULT '0',
   PRIMARY KEY (`group_payment_id`),
   KEY `FK_group_payment_group_application` (`group_app_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `group_payment`
 --
 
 INSERT INTO `group_payment` (`group_payment_id`, `group_app_id`, `timestamp`, `payment_type`, `payment_status`, `group_payment_event_detected`) VALUES
-(3, 7, '2013-04-02 08:17:10', NULL, 'paid', 1),
-(4, 8, '2013-04-02 08:19:19', NULL, 'paid', 1);
+(1, 1, '2013-04-03 13:49:14', NULL, 'paid', 1);
 
 -- --------------------------------------------------------
 
@@ -179,19 +188,17 @@ CREATE TABLE IF NOT EXISTS `group_seat_allocation` (
   `seat_allocation_id` int(10) NOT NULL AUTO_INCREMENT,
   `stud_inst_prefer_id` int(10) DEFAULT NULL,
   `round_id` int(10) DEFAULT NULL,
-  `acceptance_status` varchar(50) DEFAULT 'pending' COMMENT 'accepted/rejected/pending',
+  `acceptance_status` varchar(50) NOT NULL DEFAULT 'pending' COMMENT 'accepted/rejected/pending',
   PRIMARY KEY (`seat_allocation_id`),
   KEY `FK__student_institute_preferences` (`stud_inst_prefer_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `group_seat_allocation`
 --
 
 INSERT INTO `group_seat_allocation` (`seat_allocation_id`, `stud_inst_prefer_id`, `round_id`, `acceptance_status`) VALUES
-(4, 6, NULL, 'pending'),
-(5, 2, NULL, 'pending'),
-(6, 6, NULL, 'pending');
+(1, 2, NULL, 'accepted');
 
 -- --------------------------------------------------------
 
@@ -224,17 +231,15 @@ CREATE TABLE IF NOT EXISTS `group_student_institute_preferences` (
   PRIMARY KEY (`stud_inst_prefer_id`),
   KEY `FK__group_application` (`group_app_id`),
   KEY `FK_student_institute_preferences_institute_branch` (`branch_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `group_student_institute_preferences`
 --
 
 INSERT INTO `group_student_institute_preferences` (`stud_inst_prefer_id`, `group_app_id`, `branch_id`) VALUES
-(1, 7, 8),
-(2, 7, 7),
-(5, 8, 8),
-(6, 8, 7);
+(1, 1, 7),
+(2, 1, 9);
 
 -- --------------------------------------------------------
 
@@ -252,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `institute_branch` (
   `event_detected` int(10) DEFAULT '0',
   PRIMARY KEY (`branch_id`),
   KEY `FK_institute_branch_institute_profile` (`id_login`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `institute_branch`
@@ -260,7 +265,8 @@ CREATE TABLE IF NOT EXISTS `institute_branch` (
 
 INSERT INTO `institute_branch` (`branch_id`, `id_login`, `degree`, `specialization`, `branch_description`, `seats`, `event_detected`) VALUES
 (7, 5, 'M.Tech', 'Computer Science Engineering', 'Only GATE qualified are allowed', '120', 0),
-(8, 6, 'M.Tech', 'Electronic and Communication Engineering', 'Foe Electrical Engineers', '50', 0);
+(8, 6, 'M.Tech', 'Electronic and Communication Engineering', 'Foe Electrical Engineers', '50', 0),
+(9, 6, 'M.Tech', 'Computer Science Engineering', '', '100', 0);
 
 -- --------------------------------------------------------
 
@@ -450,11 +456,15 @@ CREATE TABLE IF NOT EXISTS `view_group_details` (
 ,`description` varchar(500)
 ,`fees` int(11)
 ,`criteria` varchar(100)
+,`visibility` int(10)
+,`group_apply` int(10)
+,`fill_preferences` int(10)
 ,`group_participants_id` int(10)
 ,`request_timestamp` timestamp
 ,`status` varchar(50)
 ,`update_timestamp` timestamp
 ,`part_stream_id` int(10)
+,`group_seats_available` int(10)
 ,`institute_id` int(10)
 ,`institute_name` varchar(100)
 ,`contact_no` varchar(50)
@@ -494,11 +504,15 @@ CREATE TABLE IF NOT EXISTS `view_group_details_without_applicants` (
 ,`title` varchar(100)
 ,`description` varchar(500)
 ,`fees` int(11)
+,`criteria` varchar(100)
+,`visibility` int(10)
+,`group_apply` int(10)
 ,`group_participants_id` int(10)
 ,`request_timestamp` timestamp
 ,`status` varchar(50)
 ,`update_timestamp` timestamp
 ,`part_stream_id` int(10)
+,`group_seats_available` int(10)
 ,`institute_id` int(10)
 ,`institute_name` varchar(100)
 ,`contact_no` varchar(50)
@@ -531,7 +545,7 @@ CREATE TABLE IF NOT EXISTS `view_prerequisites` (
 --
 DROP TABLE IF EXISTS `view_group_details`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_group_details` AS select `group_application`.`group_app_id` AS `group_app_id`,`group_admission`.`group_id` AS `group_id`,`group_participants_enroll_courses`.`branch_id` AS `branch_id`,`institute_profile`.`event_detected` AS `event_detected`,`group_participants`.`participant_id` AS `participant_id`,`group_admission`.`owner_id` AS `owner_id`,`group_admission`.`start_date` AS `start_date`,`group_admission`.`end_date` AS `end_date`,`group_admission`.`no_of_rounds` AS `no_of_rounds`,`group_admission`.`title` AS `title`,`group_admission`.`description` AS `description`,`group_admission`.`fees` AS `fees`,`group_admission`.`criteria` AS `criteria`,`group_participants`.`group_participants_id` AS `group_participants_id`,`group_participants`.`request_timestamp` AS `request_timestamp`,`group_participants`.`status` AS `status`,`group_participants`.`update_timestamp` AS `update_timestamp`,`group_participants_enroll_courses`.`part_stream_id` AS `part_stream_id`,`institute_profile`.`institute_id` AS `institute_id`,`institute_profile`.`institute_name` AS `institute_name`,`institute_profile`.`contact_no` AS `contact_no`,`institute_profile`.`address` AS `address`,`institute_profile`.`city` AS `city`,`institute_profile`.`state` AS `state`,`institute_branch`.`id_login` AS `id_login`,`institute_branch`.`degree` AS `degree`,`institute_branch`.`specialization` AS `specialization`,`institute_branch`.`branch_description` AS `branch_description`,`institute_branch`.`seats` AS `seats`,`group_application`.`applicant_id` AS `applicant_id`,`group_application`.`apply_timestamp` AS `apply_timestamp`,`group_application`.`application_status` AS `application_status`,`group_application`.`last_updated_on` AS `last_updated_on`,`group_application`.`group_application_event_detected` AS `group_application_event_detected`,`group_payment`.`group_payment_id` AS `group_payment_id`,`group_payment`.`timestamp` AS `timestamp`,`group_payment`.`payment_type` AS `payment_type`,`group_payment`.`payment_status` AS `payment_status`,`group_payment`.`group_payment_event_detected` AS `group_payment_event_detected` from ((((((`group_admission` join `group_participants` on((`group_admission`.`group_id` = `group_participants`.`group_id`))) join `group_participants_enroll_courses` on(((`group_admission`.`group_id` = `group_participants_enroll_courses`.`group_id`) and (`group_participants`.`participant_id` = `group_participants_enroll_courses`.`participant_id`)))) join `institute_profile` on((`institute_profile`.`institute_id` = `group_participants`.`participant_id`))) join `institute_branch` on(((`group_participants_enroll_courses`.`branch_id` = `institute_branch`.`branch_id`) and (`institute_profile`.`event_detected` = `institute_branch`.`event_detected`)))) join `group_application` on((`group_admission`.`group_id` = `group_application`.`group_id`))) join `group_payment` on((`group_application`.`group_app_id` = `group_payment`.`group_app_id`))) WITH CASCADED CHECK OPTION;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_group_details` AS select `group_application`.`group_app_id` AS `group_app_id`,`group_admission`.`group_id` AS `group_id`,`group_participants_enroll_courses`.`branch_id` AS `branch_id`,`institute_profile`.`event_detected` AS `event_detected`,`group_participants`.`participant_id` AS `participant_id`,`group_admission`.`owner_id` AS `owner_id`,`group_admission`.`start_date` AS `start_date`,`group_admission`.`end_date` AS `end_date`,`group_admission`.`no_of_rounds` AS `no_of_rounds`,`group_admission`.`title` AS `title`,`group_admission`.`description` AS `description`,`group_admission`.`fees` AS `fees`,`group_admission`.`criteria` AS `criteria`,`group_admission`.`visibility` AS `visibility`,`group_admission`.`group_apply` AS `group_apply`,`group_admission`.`fill_preferences` AS `fill_preferences`,`group_participants`.`group_participants_id` AS `group_participants_id`,`group_participants`.`request_timestamp` AS `request_timestamp`,`group_participants`.`status` AS `status`,`group_participants`.`update_timestamp` AS `update_timestamp`,`group_participants_enroll_courses`.`part_stream_id` AS `part_stream_id`,`group_participants_enroll_courses`.`group_seats_available` AS `group_seats_available`,`institute_profile`.`institute_id` AS `institute_id`,`institute_profile`.`institute_name` AS `institute_name`,`institute_profile`.`contact_no` AS `contact_no`,`institute_profile`.`address` AS `address`,`institute_profile`.`city` AS `city`,`institute_profile`.`state` AS `state`,`institute_branch`.`id_login` AS `id_login`,`institute_branch`.`degree` AS `degree`,`institute_branch`.`specialization` AS `specialization`,`institute_branch`.`branch_description` AS `branch_description`,`institute_branch`.`seats` AS `seats`,`group_application`.`applicant_id` AS `applicant_id`,`group_application`.`apply_timestamp` AS `apply_timestamp`,`group_application`.`application_status` AS `application_status`,`group_application`.`last_updated_on` AS `last_updated_on`,`group_application`.`group_application_event_detected` AS `group_application_event_detected`,`group_payment`.`group_payment_id` AS `group_payment_id`,`group_payment`.`timestamp` AS `timestamp`,`group_payment`.`payment_type` AS `payment_type`,`group_payment`.`payment_status` AS `payment_status`,`group_payment`.`group_payment_event_detected` AS `group_payment_event_detected` from ((((((`group_admission` join `group_participants` on((`group_admission`.`group_id` = `group_participants`.`group_id`))) join `group_participants_enroll_courses` on(((`group_admission`.`group_id` = `group_participants_enroll_courses`.`group_id`) and (`group_participants`.`participant_id` = `group_participants_enroll_courses`.`participant_id`)))) join `institute_profile` on((`institute_profile`.`institute_id` = `group_participants`.`participant_id`))) join `institute_branch` on(((`group_participants_enroll_courses`.`branch_id` = `institute_branch`.`branch_id`) and (`institute_profile`.`event_detected` = `institute_branch`.`event_detected`)))) join `group_application` on((`group_admission`.`group_id` = `group_application`.`group_id`))) join `group_payment` on((`group_application`.`group_app_id` = `group_payment`.`group_app_id`))) WITH CASCADED CHECK OPTION;
 
 -- --------------------------------------------------------
 
@@ -540,7 +554,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `view_group_details_without_applicants`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_group_details_without_applicants` AS select `group_participants_enroll_courses`.`branch_id` AS `branch_id`,`institute_profile`.`event_detected` AS `event_detected`,`group_admission`.`group_id` AS `group_id`,`group_participants`.`participant_id` AS `participant_id`,`group_admission`.`owner_id` AS `owner_id`,`group_admission`.`start_date` AS `start_date`,`group_admission`.`end_date` AS `end_date`,`group_admission`.`no_of_rounds` AS `no_of_rounds`,`group_admission`.`title` AS `title`,`group_admission`.`description` AS `description`,`group_admission`.`fees` AS `fees`,`group_participants`.`group_participants_id` AS `group_participants_id`,`group_participants`.`request_timestamp` AS `request_timestamp`,`group_participants`.`status` AS `status`,`group_participants`.`update_timestamp` AS `update_timestamp`,`group_participants_enroll_courses`.`part_stream_id` AS `part_stream_id`,`institute_profile`.`institute_id` AS `institute_id`,`institute_profile`.`institute_name` AS `institute_name`,`institute_profile`.`contact_no` AS `contact_no`,`institute_profile`.`address` AS `address`,`institute_profile`.`city` AS `city`,`institute_profile`.`state` AS `state`,`institute_branch`.`id_login` AS `id_login`,`institute_branch`.`degree` AS `degree`,`institute_branch`.`specialization` AS `specialization`,`institute_branch`.`branch_description` AS `branch_description`,`institute_branch`.`seats` AS `seats` from ((((`group_admission` join `group_participants` on((`group_admission`.`group_id` = `group_participants`.`group_id`))) join `group_participants_enroll_courses` on(((`group_admission`.`group_id` = `group_participants_enroll_courses`.`group_id`) and (`group_participants`.`participant_id` = `group_participants_enroll_courses`.`participant_id`)))) join `institute_profile` on((`institute_profile`.`institute_id` = `group_participants`.`participant_id`))) join `institute_branch` on(((`group_participants_enroll_courses`.`branch_id` = `institute_branch`.`branch_id`) and (`institute_profile`.`event_detected` = `institute_branch`.`event_detected`))));
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_group_details_without_applicants` AS select `group_participants_enroll_courses`.`branch_id` AS `branch_id`,`institute_profile`.`event_detected` AS `event_detected`,`group_admission`.`group_id` AS `group_id`,`group_participants`.`participant_id` AS `participant_id`,`group_admission`.`owner_id` AS `owner_id`,`group_admission`.`start_date` AS `start_date`,`group_admission`.`end_date` AS `end_date`,`group_admission`.`no_of_rounds` AS `no_of_rounds`,`group_admission`.`title` AS `title`,`group_admission`.`description` AS `description`,`group_admission`.`fees` AS `fees`,`group_admission`.`criteria` AS `criteria`,`group_admission`.`visibility` AS `visibility`,`group_admission`.`group_apply` AS `group_apply`,`group_participants`.`group_participants_id` AS `group_participants_id`,`group_participants`.`request_timestamp` AS `request_timestamp`,`group_participants`.`status` AS `status`,`group_participants`.`update_timestamp` AS `update_timestamp`,`group_participants_enroll_courses`.`part_stream_id` AS `part_stream_id`,`group_participants_enroll_courses`.`group_seats_available` AS `group_seats_available`,`institute_profile`.`institute_id` AS `institute_id`,`institute_profile`.`institute_name` AS `institute_name`,`institute_profile`.`contact_no` AS `contact_no`,`institute_profile`.`address` AS `address`,`institute_profile`.`city` AS `city`,`institute_profile`.`state` AS `state`,`institute_branch`.`id_login` AS `id_login`,`institute_branch`.`degree` AS `degree`,`institute_branch`.`specialization` AS `specialization`,`institute_branch`.`branch_description` AS `branch_description`,`institute_branch`.`seats` AS `seats` from ((((`group_admission` join `group_participants` on((`group_admission`.`group_id` = `group_participants`.`group_id`))) join `group_participants_enroll_courses` on(((`group_admission`.`group_id` = `group_participants_enroll_courses`.`group_id`) and (`group_participants`.`participant_id` = `group_participants_enroll_courses`.`participant_id`)))) join `institute_profile` on((`institute_profile`.`institute_id` = `group_participants`.`participant_id`))) join `institute_branch` on(((`group_participants_enroll_courses`.`branch_id` = `institute_branch`.`branch_id`) and (`institute_profile`.`event_detected` = `institute_branch`.`event_detected`)))) WITH CASCADED CHECK OPTION;
 
 -- --------------------------------------------------------
 
@@ -549,7 +563,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `view_prerequisites`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_prerequisites` AS select `prerequisites`.`list_degree_id` AS `list_degree_id`,`prerequisites`.`prerequisites_id` AS `prerequisites_id`,`prerequisites`.`branch_id` AS `branch_id`,`prerequisites`.`percentage` AS `percentage`,`list_of_degree_specialisation`.`degree` AS `degree`,`list_of_degree_specialisation`.`specialization` AS `specialization` from (`prerequisites` join `list_of_degree_specialisation` on((`prerequisites`.`list_degree_id` = `list_of_degree_specialisation`.`list_degree_id`)));
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_prerequisites` AS select `prerequisites`.`list_degree_id` AS `list_degree_id`,`prerequisites`.`prerequisites_id` AS `prerequisites_id`,`prerequisites`.`branch_id` AS `branch_id`,`prerequisites`.`percentage` AS `percentage`,`list_of_degree_specialisation`.`degree` AS `degree`,`list_of_degree_specialisation`.`specialization` AS `specialization` from (`prerequisites` join `list_of_degree_specialisation` on((`prerequisites`.`list_degree_id` = `list_of_degree_specialisation`.`list_degree_id`))) WITH CASCADED CHECK OPTION;
 
 --
 -- Constraints for dumped tables

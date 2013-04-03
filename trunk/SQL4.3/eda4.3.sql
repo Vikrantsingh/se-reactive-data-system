@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 02, 2013 at 11:10 PM
+-- Generation Time: Apr 03, 2013 at 06:28 PM
 -- Server version: 5.5.25
 -- PHP Version: 5.3.9
 
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `event_type` varchar(10) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=58 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=61 ;
 
 --
 -- Dumping data for table `events`
@@ -146,7 +146,9 @@ INSERT INTO `events` (`event_id`, `event_name`, `event_type`, `status`) VALUES
 (51, 'insertGroupPaymentStatusPending', 'DB', 0),
 (52, 'setApplicationStatusApproved', 'DB', 0),
 (56, 'hellotime', 'TIME', 0),
-(57, 'hellotime', 'TIME', 0);
+(57, 'hellotime', 'TIME', 0),
+(59, 'RegistrationClosed9', 'TIME', 0),
+(60, 'EnableGroupVisiblity9', 'TIME', 0);
 
 -- --------------------------------------------------------
 
@@ -178,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `reaction` (
   `function_name` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`reaction_id`),
   KEY `FK_reaction_events` (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
 
 --
 -- Dumping data for table `reaction`
@@ -188,8 +190,11 @@ INSERT INTO `reaction` (`reaction_id`, `event_id`, `reaction_name`, `reaction_ty
 (15, 48, 'sendmail', 'FUNCTION', '', 'app.admission.SignUp.mailConformation'),
 (19, 51, 'PaymentStatusPending', 'FUNCTION', '', 'app.admission.PaymentAction.insertGroupPaymentStatusPending'),
 (20, 52, 'ApplicationApproval', 'FUNCTION', '', 'app.admission.PaymentAction.setApplicationStatusApproved'),
-(24, 56, 'seatAllocate', 'FUNCTION', '', 'app.admission.seatAllocation.PreferencesModel.allocateSeat()'),
-(25, 57, 'seatAllocate', 'FUNCTION', '', 'app.admission.seatAllocation.PreferencesModel.allocateSeat()');
+(24, 56, 'seatAllocate', 'FUNCTION', '', 'app.admission.seatallocation.PreferencesAction.allocateSeat'),
+(25, 57, 'seatAllocate', 'FUNCTION', '', 'app.admission.seatallocation.PreferencesAction.allocateSeat'),
+(27, 59, 'seatAllocate9', 'FUNCTION', '', 'app.admission.seatallocation.PreferencesAction.allocateSeat'),
+(28, 59, 'DisableGroupApply9', 'FUNCTION', '', 'app.admission.TimeEvent.setDisableGroupApply'),
+(29, 60, 'setGroupVisiblity9', 'FUNCTION', '', 'app.admission.TimeEvent.setGroupVisible');
 
 -- --------------------------------------------------------
 
@@ -238,17 +243,20 @@ CREATE TABLE IF NOT EXISTS `time_event` (
   `time` datetime NOT NULL,
   `occurred` int(50) NOT NULL DEFAULT '0',
   `periodic` varchar(20) NOT NULL DEFAULT 'no',
+  `parameter` int(10) DEFAULT '0',
   PRIMARY KEY (`time_event_id`),
-  KEY `event_id` (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+  KEY `time_event_ibfk_1` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
 
 --
 -- Dumping data for table `time_event`
 --
 
-INSERT INTO `time_event` (`time_event_id`, `event_id`, `time`, `occurred`, `periodic`) VALUES
-(1, 56, '2013-04-03 01:50:00', 1, 'no'),
-(2, 57, '2013-04-03 01:50:00', 1, 'no');
+INSERT INTO `time_event` (`time_event_id`, `event_id`, `time`, `occurred`, `periodic`, `parameter`) VALUES
+(1, 56, '2013-04-03 01:50:00', 1, 'no', 6),
+(2, 57, '2013-04-03 01:50:00', 1, 'no', 6),
+(4, 59, '2013-03-31 00:01:00', 1, 'no', 9),
+(5, 60, '2013-03-31 00:01:00', 1, 'no', 9);
 
 -- --------------------------------------------------------
 
@@ -264,6 +272,7 @@ CREATE TABLE IF NOT EXISTS `time_event_view_summary` (
 ,`time` datetime
 ,`occurred` int(50)
 ,`periodic` varchar(20)
+,`parameter` int(10)
 ,`reaction_id` int(10)
 ,`reaction_name` varchar(100)
 ,`reaction_type` varchar(10)
@@ -286,7 +295,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `time_event_view_summary`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `time_event_view_summary` AS select `events`.`event_id` AS `event_id`,`events`.`event_name` AS `event_name`,`events`.`event_type` AS `event_type`,`events`.`status` AS `status`,`time_event`.`time_event_id` AS `time_event_id`,`time_event`.`time` AS `time`,`time_event`.`occurred` AS `occurred`,`time_event`.`periodic` AS `periodic`,`reaction`.`reaction_id` AS `reaction_id`,`reaction`.`reaction_name` AS `reaction_name`,`reaction`.`reaction_type` AS `reaction_type`,`reaction`.`sql_query` AS `sql_query`,`reaction`.`function_name` AS `function_name` from ((`events` join `time_event` on((`events`.`event_id` = `time_event`.`event_id`))) join `reaction` on((`events`.`event_id` = `reaction`.`event_id`)));
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `time_event_view_summary` AS select `events`.`event_id` AS `event_id`,`events`.`event_name` AS `event_name`,`events`.`event_type` AS `event_type`,`events`.`status` AS `status`,`time_event`.`time_event_id` AS `time_event_id`,`time_event`.`time` AS `time`,`time_event`.`occurred` AS `occurred`,`time_event`.`periodic` AS `periodic`,`time_event`.`parameter` AS `parameter`,`reaction`.`reaction_id` AS `reaction_id`,`reaction`.`reaction_name` AS `reaction_name`,`reaction`.`reaction_type` AS `reaction_type`,`reaction`.`sql_query` AS `sql_query`,`reaction`.`function_name` AS `function_name` from ((`events` join `time_event` on((`events`.`event_id` = `time_event`.`event_id`))) join `reaction` on((`events`.`event_id` = `reaction`.`event_id`))) WITH CASCADED CHECK OPTION;
 
 --
 -- Constraints for dumped tables
@@ -321,7 +330,7 @@ ALTER TABLE `row_filter`
 -- Constraints for table `time_event`
 --
 ALTER TABLE `time_event`
-  ADD CONSTRAINT `time_event_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`event_id`);
+  ADD CONSTRAINT `time_event_ibfk_1` FOREIGN KEY (`event_id`) REFERENCES `events` (`event_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
