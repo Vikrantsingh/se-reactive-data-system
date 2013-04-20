@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2013 at 06:28 PM
+-- Generation Time: Apr 20, 2013 at 09:06 AM
 -- Server version: 5.5.25
 -- PHP Version: 5.3.9
 
@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `event_type` varchar(10) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=61 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=64 ;
 
 --
 -- Dumping data for table `events`
@@ -148,7 +148,9 @@ INSERT INTO `events` (`event_id`, `event_name`, `event_type`, `status`) VALUES
 (56, 'hellotime', 'TIME', 0),
 (57, 'hellotime', 'TIME', 0),
 (59, 'RegistrationClosed9', 'TIME', 0),
-(60, 'EnableGroupVisiblity9', 'TIME', 0);
+(60, 'EnableGroupVisiblity9', 'TIME', 0),
+(62, 'RegistrationClosed10', 'TIME', 0),
+(63, 'StartGroupRegistration10', 'TIME', 0);
 
 -- --------------------------------------------------------
 
@@ -180,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `reaction` (
   `function_name` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`reaction_id`),
   KEY `FK_reaction_events` (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=34 ;
 
 --
 -- Dumping data for table `reaction`
@@ -194,7 +196,10 @@ INSERT INTO `reaction` (`reaction_id`, `event_id`, `reaction_name`, `reaction_ty
 (25, 57, 'seatAllocate', 'FUNCTION', '', 'app.admission.seatallocation.PreferencesAction.allocateSeat'),
 (27, 59, 'seatAllocate9', 'FUNCTION', '', 'app.admission.seatallocation.PreferencesAction.allocateSeat'),
 (28, 59, 'DisableGroupApply9', 'FUNCTION', '', 'app.admission.TimeEvent.setDisableGroupApply'),
-(29, 60, 'setGroupVisiblity9', 'FUNCTION', '', 'app.admission.TimeEvent.setGroupVisible');
+(29, 60, 'setGroupVisiblity9', 'FUNCTION', '', 'app.admission.TimeEvent.setGroupVisible'),
+(31, 62, 'seatAllocate10', 'FUNCTION', '', 'app.admission.seatallocation.PreferencesAction.allocateSeat'),
+(32, 62, 'DisableGroupApply10', 'FUNCTION', '', 'app.admission.TimeEvent.setDisableGroupApply'),
+(33, 63, 'setGroupVisiblity10', 'FUNCTION', '', 'app.admission.TimeEvent.setGroupVisible');
 
 -- --------------------------------------------------------
 
@@ -246,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `time_event` (
   `parameter` int(10) DEFAULT '0',
   PRIMARY KEY (`time_event_id`),
   KEY `time_event_ibfk_1` (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `time_event`
@@ -256,7 +261,9 @@ INSERT INTO `time_event` (`time_event_id`, `event_id`, `time`, `occurred`, `peri
 (1, 56, '2013-04-03 01:50:00', 1, 'no', 6),
 (2, 57, '2013-04-03 01:50:00', 1, 'no', 6),
 (4, 59, '2013-03-31 00:01:00', 1, 'no', 9),
-(5, 60, '2013-03-31 00:01:00', 1, 'no', 9);
+(5, 60, '2013-03-31 00:01:00', 1, 'no', 9),
+(6, 62, '2013-04-27 00:01:00', 0, 'no', 10),
+(7, 63, '2013-04-20 00:01:00', 0, 'no', 10);
 
 -- --------------------------------------------------------
 
