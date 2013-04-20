@@ -25,8 +25,8 @@ public class example1RegisterEvent {
 		
 		DB_Events dbe = new DB_Events(); 
 		
-		//specify name of event, database Id and on which table it will happen
-		dbe.register_Event("loginAction",1,"login");
+		//specify name of event, database Id , on which table it will happen and last one is surrogate key of table
+		dbe.register_Event("loginAction",1,"login","id");
 		
 		//specify a set of rules for triggering event
 		String cons = " status = 'verified' ";

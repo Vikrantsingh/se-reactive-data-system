@@ -1,4 +1,13 @@
+app.admission
+app.admission.seatallocation
 eda.api.dbevents
+eda.api.event
+eda.api.reaction
 eda.api.time_events
+eda.api.time_events.depricated
+eda.caller
+eda.connection
 eda.exception
+eda.listener
+eda.listener.depricated
 example

@@ -25,8 +25,12 @@ xmlhttp.send();
 <body>
 hii
 
-Status:&nbsp; <div id="myDiv">Stop</div>
+Status:&nbsp; <div id="myDiv" style="float:left">Stop</div>
 <input type="button" name="start" value="start"  onclick="Startthread('on')"/>
 <input type="button" name="stop" value="stop" onclick="Startthread('off')"/>
+
+<a href="admission"> Web App</a>
+<a href="edaAdmin">EDA Admin</a>
+
 </body>
 </html>

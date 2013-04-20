@@ -21,9 +21,27 @@ public class DB_Events extends Events {
 	private String table_name;
 	private int status;
 	private String constraints;
+	private String surrogateKey;
+	
 	
 
 	/* Arraylist for storing multivalued variables */
+
+	/**
+	 * @return the surrogateKey
+	 */
+	public String getSurrogateKey() {
+		return surrogateKey;
+	}
+
+
+	/**
+	 * @param surrogateKey the surrogateKey to set
+	 */
+	public void setSurrogateKey(String surrogateKey) {
+		this.surrogateKey = surrogateKey;
+	}
+
 
 	/**
 	 * @return the constraints
@@ -190,13 +208,14 @@ public class DB_Events extends Events {
 	 *            the event_name to set, table_name the table_name to set These
 	 *            are just for transient stored of the event details
 	 */
-	public void register_Event(String event_name,int database_id, String table_name) {
+	public void register_Event(String event_name,int database_id, String table_name,String surrogateKey) {
 
 		
 		setEvent_name(event_name);
 		setEvent_type("DB");
 		setDatabase_id(database_id);
 		setTable_name(table_name);
+		setSurrogateKey(surrogateKey);
 		setStatus(0);
 		System.out.println("Stored the event name, event type, table name ");
 	}
@@ -282,7 +301,7 @@ public class DB_Events extends Events {
 			/*
 			 * Store in db_event
 			 */
-			query = "insert into db_event (event_id,database_id,table_name) values (?,?,?)";
+			query = "insert into db_event (event_id,database_id,table_name,surrogate_key) values (?,?,?,?)";
 
 			pstmt = con.prepareStatement(query);
 			
@@ -291,6 +310,8 @@ public class DB_Events extends Events {
 			pstmt.setInt(2, getDatabase_id());
 			
 			pstmt.setString(3, getTable_name());
+			
+			pstmt.setString(4, getSurrogateKey());
 			
 			pstmt.executeUpdate();
 			
