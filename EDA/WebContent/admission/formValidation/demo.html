@@ -1,0 +1,95 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> <!-- or use local jquery -->
+<script src="bootstrap/js/bootstrap.js"></script> <!-- or use local jquery -->
+<link href="bootstrap/css/bootstrap.css"   rel="stylesheet"  type="text/css"/>
+<script src="jqBootstrapValidation.js"></script>
+<script>
+  $(function () { $("input,select,textarea").not("[type=submit]").jqBootstrapValidation(); } );
+</script>
+</head>
+<body>
+ <div>
+<h1>Title</h1>
+                    <form class="form-horizontal" action="#" novalidate>
+                    <!-- Email Address -->
+                        <div class="control-group">
+                            <label class="control-label" for="email">Email address</label>
+                            <div class="controls">
+                                <input type="email" name="email" id="email" required>
+                                <p class="help-block">Email address we can contact you on</p>
+                            </div>
+                        </div>
+                    <!-- Password -->
+                        <div class="control-group">
+                            <label class="control-label" for="password">Password</label>
+                            <div class="controls">
+                                <input type="password" name="password" id="password"  minlength="5"  maxlength="20"  required>
+                                <p class="help-block">Enter Complex Password</p>
+                            </div>
+                        </div>
+                    <!-- Confirm Password -->
+                        <div class="control-group">
+                            <label class="control-label" for="confirmpassword">Confirm Password</label>
+                            <div class="controls">
+                                <input type="password" data-validation-matches-match="password" data-validation-matches-message="Must match password entered above" id="confirmpassword" name="confirmpassword"   minlength="5"  maxlength="20"   required>
+                                <p class="help-block">And again, to check for speeling miskates</p>
+                            </div>
+                        </div>
+                    <!-- I Agree -->
+                        <div class="control-group">
+                            <label class="control-label" for="terms-and-conditions">Legal</label>
+                            <div class="controls">
+                                <label class="checkbox">
+                                    <input type="checkbox" id="terms-and-conditions" name="terms-and-conditions" required data-validation-required-message="You must agree to the terms and conditions">
+                                    I agree to the <a href="#">terms and conditions</a>
+                                </label>
+                                <p class="help-block"></p>
+                            </div>
+                        </div>
+                    <!-- Check Boxes -->
+                        <div class="control-group">
+                            <label class="control-label">Quality Control</label>
+                            <div class="controls">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="qualityControl[]" value="fast" data-validation-minchecked-minchecked="2" data-validation-minchecked-message="Choose two" data-validation-maxchecked-maxchecked="2" data-validation-maxchecked-message="You can't have it all ways" >
+                                    Fast
+                                </label>
+                                <label class="checkbox">
+                                    <input type="checkbox" name="qualityControl[]" value="cheap">
+                                    Cheap
+                                </label>
+                                <label class="checkbox">
+                                    <input type="checkbox" name="qualityControl[]" value="good">
+                                    Good
+                                </label>
+                                <p class="help-block"></p>
+                            </div>
+                        </div>
+                    <!-- Submit Button -->
+                        <div class="control-group">
+                            <label class="control-label" for="pincode">Pin code</label>
+                            <div class="controls">
+                                <input type="number" name="pincode" id="pincode" required >
+                                <p class="help-block">numeric value</p>
+                            </div>
+                        </div>
+                    
+                    
+                    
+                    
+                    
+  
+                                        
+                    
+                    
+                    
+                    
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Test Validation <i class="icon-ok icon-white"></i></button><br />
+                            (go ahead, nothing is sent anywhere)
+                        </div>
+                    </form>
+                </div>
+
+  </body></html>
