@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 08, 2013 at 12:07 PM
+-- Generation Time: Mar 08, 2013 at 02:52 PM
 -- Server version: 5.5.25
 -- PHP Version: 5.3.9
 
@@ -81,11 +81,11 @@ CREATE TABLE IF NOT EXISTS `db_event` (
 
 INSERT INTO `db_event` (`event_id`, `database_id`, `status`, `table_name`) VALUES
 (17, 1, 0, 'login'),
-(29, 1, 1, 'login'),
-(30, 1, 1, 'login'),
-(31, 1, 1, 'login'),
-(32, 1, 1, 'login'),
-(33, 1, 1, 'login'),
+(29, 1, 0, 'login'),
+(30, 1, 0, 'login'),
+(31, 1, 0, 'login'),
+(32, 1, 0, 'login'),
+(33, 1, 0, 'login'),
 (34, 1, 0, 'login'),
 (35, 1, 0, 'login'),
 (36, 1, 0, 'login'),
@@ -94,11 +94,11 @@ INSERT INTO `db_event` (`event_id`, `database_id`, `status`, `table_name`) VALUE
 (39, 1, 0, 'login'),
 (40, 1, 0, 'login'),
 (41, 1, 0, 'login'),
-(42, 1, 0, 'login'),
-(43, 1, 0, 'login'),
-(44, 1, 0, 'login'),
-(45, 1, 0, 'login'),
-(46, 1, 0, 'login');
+(42, 1, 1, 'login'),
+(43, 1, 1, 'login'),
+(44, 1, 1, 'login'),
+(45, 1, 1, 'login'),
+(46, 1, 1, 'login');
 
 -- --------------------------------------------------------
 
@@ -106,17 +106,22 @@ INSERT INTO `db_event` (`event_id`, `database_id`, `status`, `table_name`) VALUE
 -- Stand-in structure for view `db_event_view_summary`
 --
 CREATE TABLE IF NOT EXISTS `db_event_view_summary` (
-`database_id` int(10)
+`event_id` int(10)
+,`database_id` int(10)
 ,`database_name` varchar(50)
 ,`hostname` varchar(50)
 ,`port` int(11)
 ,`username` varchar(50)
 ,`password` varchar(50)
-,`event_id` int(10)
 ,`status` int(10)
 ,`table_name` varchar(20)
 ,`db_event_id` int(10)
 ,`constraints` varchar(300)
+,`reaction_id` int(10)
+,`reaction_name` varchar(100)
+,`reaction_type` varchar(10)
+,`sql_query` varchar(200)
+,`function_name` varchar(100)
 );
 -- --------------------------------------------------------
 
@@ -215,9 +220,9 @@ INSERT INTO `reaction` (`reaction_id`, `event_id`, `reaction_name`, `reaction_ty
 (8, 43, 'activate', 'DB', 'update login set active=''true'' ', ''),
 (9, 44, 'activate', 'DB', 'update login set active=''true'' ', ''),
 (10, 45, 'activate', 'DB', 'update login set active=''true'' ', ''),
-(11, 45, 'sendmail', 'FUNCTION', '', 'sendmail()'),
+(11, 45, 'sendmail', 'FUNCTION', '', 'app.admission.Hello.sendmail'),
 (12, 46, 'activate', 'DB', 'update login set active=''true'' ', ''),
-(13, 46, 'sendmail', 'FUNCTION', '', 'sendmail()');
+(13, 46, 'sendmail', 'FUNCTION', '', 'app.admission.Hello.sendmail');
 
 -- --------------------------------------------------------
 
@@ -310,7 +315,7 @@ CREATE TABLE IF NOT EXISTS `time_event_view_summary` (
 --
 DROP TABLE IF EXISTS `db_event_view_summary`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_event_view_summary` AS select `database_info`.`database_id` AS `database_id`,`database_info`.`database_name` AS `database_name`,`database_info`.`hostname` AS `hostname`,`database_info`.`port` AS `port`,`database_info`.`username` AS `username`,`database_info`.`password` AS `password`,`db_event`.`event_id` AS `event_id`,`db_event`.`status` AS `status`,`db_event`.`table_name` AS `table_name`,`row_filter`.`db_event_id` AS `db_event_id`,`row_filter`.`constraints` AS `constraints` from ((`database_info` join `db_event` on((`database_info`.`database_id` = `db_event`.`database_id`))) join `row_filter` on((`db_event`.`event_id` = `row_filter`.`db_event_id`)));
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `db_event_view_summary` AS select `db_event`.`event_id` AS `event_id`,`database_info`.`database_id` AS `database_id`,`database_info`.`database_name` AS `database_name`,`database_info`.`hostname` AS `hostname`,`database_info`.`port` AS `port`,`database_info`.`username` AS `username`,`database_info`.`password` AS `password`,`db_event`.`status` AS `status`,`db_event`.`table_name` AS `table_name`,`row_filter`.`db_event_id` AS `db_event_id`,`row_filter`.`constraints` AS `constraints`,`reaction`.`reaction_id` AS `reaction_id`,`reaction`.`reaction_name` AS `reaction_name`,`reaction`.`reaction_type` AS `reaction_type`,`reaction`.`sql_query` AS `sql_query`,`reaction`.`function_name` AS `function_name` from (((`database_info` join `db_event` on((`database_info`.`database_id` = `db_event`.`database_id`))) join `row_filter` on((`db_event`.`event_id` = `row_filter`.`db_event_id`))) join `reaction` on((`db_event`.`event_id` = `reaction`.`event_id`))) WITH CASCADED CHECK OPTION;
 
 -- --------------------------------------------------------
 

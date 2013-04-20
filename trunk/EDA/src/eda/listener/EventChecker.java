@@ -4,28 +4,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.lang.reflect.*;
 
-import eda.connection.DB_Config;
+import eda.caller.CallerUnitForDBReaction;
+import eda.connection.DBModel;
 
 public class EventChecker {
-	
-	private static Connection conn=null;
-	private static int db_id=-1;
-	
-	/**
-	 * @return the db_id
-	 */
-	public int getDb_id() {
-		return db_id;
-	}
 
-	/**
-	 * @param db_id the db_id to set
-	 */
-	public void setDb_id(int db_id) {
-		this.db_id = db_id;
-	}
+	private static Connection conn = null;
+	private static int db_id = -1;
 
 	/**
 	 * @return the conn
@@ -35,43 +22,36 @@ public class EventChecker {
 	}
 
 	/**
-	 * @param conn the conn to set
+	 * @param conn
+	 *            the conn to set
 	 */
 	public static void setConn(Connection conn) {
 		EventChecker.conn = conn;
 	}
 
-	public Connection FetchConn(int dbid,String dbname,String host,String username, String password )  
-	{
-		try{
-		
-			String dbURL2 = "jdbc:mysql://localhost:3306/"+dbname;
-			if(getConn()!=null)
-				if(getConn().isValid(0))
-				{
-					if(getDb_id()==dbid)
-					{
+	public Connection FetchConn(int dbid, String dbname, String host,
+			String username, String password) {
+		try {
+
+			String dbURL2 = "jdbc:mysql://localhost:3306/" + dbname;
+			if (getConn() != null)
+				if (getConn().isValid(0)) {
+					if (EventChecker.db_id == dbid) {
 						return getConn();
-					}
-					else
-					{
+					} else {
 						getConn().close();
 					}
-				}		
-			setDb_id(dbid);
-			String dbDriver = "com.mysql.jdbc.Driver"; 										
+				}
+			EventChecker.db_id = dbid;
+			String dbDriver = "com.mysql.jdbc.Driver";
 			Class.forName(dbDriver);
-	    	setConn(DriverManager.getConnection(dbURL2,username,password));
+			setConn(DriverManager.getConnection(dbURL2, username, password));
 			return getConn();
-		}
-		catch(Exception ex)
-		{
+		} catch (Exception ex) {
 			System.out.println("Err 2 event checker");
 		}
 		return null;
 	}
-	
-
 
 	/**
 	 * @param args
@@ -110,11 +90,8 @@ public class EventChecker {
 		EventChecker.no_of_listner = no_of_listner;
 	}
 
-	public void fork() {
-
-	}
-
-	public void DBeventScanner(Connection con)   {
+ 
+	public void DBeventScanner(Connection con) {
 		// TODO Auto-generated method stub
 		/*
 		 * scan event type and event repo for to check any event occurred or not
@@ -122,55 +99,114 @@ public class EventChecker {
 		 * action parameter
 		 */
 
-
-
 		String query = "select * from db_event_view_summary where status = 0";
-		
+
 		PreparedStatement pstmt;
-		
+
 		try {
 			pstmt = con.prepareStatement(query,
 					PreparedStatement.RETURN_GENERATED_KEYS);
 
 			ResultSet rs = pstmt.executeQuery();
-			
-			long db_id=-1; //set default
-			
+
+			long db_id = -1; // set default
+
 			Connection econ = null;
-			
-			while(rs.next())
-			{
-				//avoid performing reconnection to event repo
-				//System.out.println("Checking... event id :"+rs.getString("event_id"));					
-				if(econ==null || econ.isClosed() || db_id != Long.parseLong(rs.getString("database_id")) )
-				{	
+
+			while (rs.next()) {
+				// avoid performing reconnection to event repo
+				// System.out.println("Checking... event id :"+rs.getString("event_id"));
+				if (econ == null || econ.isClosed()
+						|| db_id != Long.parseLong(rs.getString("database_id"))) {
 					db_id = Long.parseLong(rs.getString("database_id"));
-			        econ = FetchConn(Integer.parseInt(rs.getString("database_id")),rs.getString("database_name"),rs.getString("hostname")+":"+rs.getString("port"),rs.getString("username"), rs.getString("password"));			        
-				}	
-		        String createQuery = "select * from `"+rs.getString("table_name")+"` where "+rs.getString("constraints");
+					econ = FetchConn(
+							Integer.parseInt(rs.getString("database_id")),
+							rs.getString("database_name"),
+							rs.getString("hostname") + ":"
+									+ rs.getString("port"),
+							rs.getString("username"), rs.getString("password"));
+				}
+                                
+                                String createQuery ="";
+                                if(rs.getString("constraints").length()!=0)
+                                { 
+                                    createQuery = "select * from `"
+						+ rs.getString("table_name") + "` where "
+						+ rs.getString("constraints")
+						+ " and " +rs.getString("table_name") + "_event_detected=0";
+                                }
+                                else
+                                {
+                                createQuery = "select * from `"
+						+ rs.getString("table_name") + "` where "						
+						+ rs.getString("table_name") + "_event_detected=0";
+                                }
+                                
+                                
 				PreparedStatement ps = econ.prepareStatement(createQuery);
-				//System.out.println("query="+ps.toString());
+				// System.out.println("query="+ps.toString());
 				ResultSet res = ps.executeQuery();
-				if(res.next())
-				{	/*
-					*	It means event occurred now performs respective reaction
-					*/
-				
-					System.out.println("Event Occurred"+rs.getString("event_id"));
-					String querySetEventOccurred = "update db_event set status=1 where event_id="+rs.getString("event_id");
-					System.out.println(querySetEventOccurred);
-					pstmt = con.prepareStatement(querySetEventOccurred);						
-					pstmt.executeUpdate();
-											
+				if (res.next()) { /*
+								 * It means event occurred now performs
+								 * respective reaction
+								 */
+					//change status
+					createQuery = "update "+ rs.getString("table_name") +" set "+rs.getString("table_name") + "_event_detected=1 where "+rs.getString("surrogate_key")+"="+res.getInt(rs.getString("surrogate_key"));
+					PreparedStatement ps1 = econ.prepareStatement(createQuery);
+					int s = ps1.executeUpdate(createQuery);
+					
+					// check reaction type
+
+					// if db reaction then,
+
+					
+					if (rs.getString("reaction_type").equals("DB")) {
+						DBModel db = new DBModel(rs.getString("database_name"),
+								"", Integer.parseInt(rs.getString("port")),
+								rs.getString("hostname"),
+								rs.getString("username"),
+								rs.getString("password"));
+						
+						String rquery = rs.getString("sql_query");
+						System.out.println("Calley Unit Thread created");
+						CallerUnitForDBReaction cuDB = new CallerUnitForDBReaction(
+								Integer.parseInt(rs.getString("event_id")), db,
+								rquery);
+						
+						//Thread t = new Thread(cuDB);
+						cuDB.run(econ);
+						
+						
+					}
+					// if external function call then,
+					else {
+						
+						//app.admission.Hello.sendmail(row_id);
+						String fname = rs.getString("function_name");
+						String className = fname.substring(0, fname.lastIndexOf("."));
+						String functionName=fname.substring(fname.lastIndexOf(".")+1, fname.length());
+						int rowID = res.getInt(rs.getString("surrogate_key"));
+						Class cc = Class.forName(className);
+						Method m = cc.getMethod(functionName,int.class);
+						m.invoke(cc.newInstance(),rowID);												
+					}
+					System.out.println("Event Occurred"
+							+ rs.getString("event_id"));
+//					String querySetEventOccurred = "update db_event set status=1 where event_id="
+//							+ rs.getString("event_id");
+//					//System.out.println(querySetEventOccurred);
+//					pstmt = con.prepareStatement(querySetEventOccurred);
+//					pstmt.executeUpdate();
+
 				}
 				res.close();
-				ps.close();					
-				
-			}					
+				ps.close();
 
-				//System.out.println("done");
-//			if(econ !=null && !econ.isClosed())
-//				econ.close();			
+			}
+
+			// System.out.println("done");
+			// if(econ !=null && !econ.isClosed())
+			// econ.close();
 			rs.close();
 			pstmt.close();
 

@@ -179,8 +179,8 @@ public class DB_Config {
 			System.out.println("Cannot connect to database"+ex);
 		}
 		activeConnections++;
-		System.out.println("Connection Successfully Established");
-		System.out.println("Total active connections are:"+activeConnections);
+		//System.out.println("Connection Successfully Established");
+		//System.out.println("Total active connections are:"+activeConnections);
 /*		create_Event_Table(con,prefix);
 		create_DB_Event_Table(con,prefix);
 		create_DB_rowfilter(con,prefix);
@@ -192,207 +192,208 @@ public class DB_Config {
 		return con;
 	}
 
-	//function to store the name of the values and expressions of the column
-	private static void create_DB_Col_Val(Connection con, String prefix) {
-		// TODO Auto-generated method stub
-		Statement statement = null;
-		@SuppressWarnings("unused")
-		int done;
-		try {
-			statement = con.createStatement();
-			done = statement.executeUpdate("CREATE TABLE "+prefix+"_column_val("
-					+"col_id int(5) unsigned NOT NULL,"
-					+"col_val varchar(30) NOT NULL,"
-					+"col_exp varchar(50) NOT NULL,"
-					+"FOREIGN KEY (col_id) REFERENCES col_access(col_id))"
-					+"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
-			System.out.println("Successfully Col_Val table created!!");
-
-		} catch (SQLException ex) {
-			System.out.println("DB_Col_val_Table () while running sql:"+ ex);
-		} finally {
-			close(statement);
-		}
-	}
-	//function to create the col_access table for storing the columns details
-	/**
-	 * @param con Connection Object OF Database
-	 * @param prefix User Defined Prefix
-	 * @category				It is defined by the user
-	 */
-	private static void create_DB_Col_access_Table(Connection con, String prefix) {
-		// TODO Auto-generated method stub
-		Statement statement = null;
-		@SuppressWarnings("unused")
-		int done;
-		try {
-			statement = con.createStatement();
-			done = statement.executeUpdate("CREATE TABLE "+prefix+"_col_access("+
-					"db_event_id int(10) unsigned NOT NULL,"+
-					"col_id int(5) unsigned NOT NULL,"+
-					"col_name varchar(30) NOT NULL,"+
-					"PRIMARY KEY (col_id),"+
-					"FOREIGN KEY (db_event_id) REFERENCES db_event(db_event_id))"+
-					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
-			System.out.println("Successfully Col_access table created!!");
-
-		} catch (SQLException ex) {
-			System.out.println("Col_access_Table () while running sql:"+ ex);
-		} finally {
-			close(statement);
-		}
-	}
-
-	//function  to create the rowfilter database
-	private static void create_DB_rowfilter(Connection con,String prefix) {
-		// TODO Auto-generated method stub
-		Statement statement = null;
-		@SuppressWarnings("unused")
-		int done;
-		try {
-			statement = con.createStatement();
-			done = statement.executeUpdate("CREATE TABLE "+prefix+"_rowfilter("+
-					"db_event_id int(10) unsigned NOT NULL,"+
-					"row_filter varchar(300)  NOT NULL,"+
-					"FOREIGN KEY (db_event_id) REFERENCES db_event(db_event_id))"+
-					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
-			System.out.println("Successfully rowfilter() created!!");
-
-		} catch (SQLException ex) {
-			System.out.println("rowfilter_table() while running sql:"+ ex);
-		} finally {
-			close(statement);
-		}
-
-	}
-	// function to create the time event information table
-	private static void create_TIME_Event_Table(Connection con,String prefix) {
-		// TODO Auto-generated method stub
-		Statement statement = null;
-		@SuppressWarnings("unused")
-		int done;
-		try {
-			statement = con.createStatement();
-			done = statement.executeUpdate("CREATE TABLE "+prefix+"_time_event("+
-					"event_id int(10) unsigned NOT NULL,"+
-					"time_event_id int(10) unsigned NOT NULL,"+
-					"periodic varchar(20) NOT NULL,"+
-					"time_assigned time NOT NULL,"+
-					"date_check date NOT NULL,"+
-					"PRIMARY KEY (time_event_id),"+
-					" FOREIGN KEY (event_id) REFERENCES events(event_id))"+
-					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
-			System.out.println("Successfully TIME_Event_Table created!!");
-
-		} catch (SQLException ex) {
-			System.out.println("TIME_Event_Table() while running sql:"+ ex);
-		} finally {
-			close(statement);
-		}		
-	}
-
-
-	// function to create database event information table
-	/**
-	 * @param con Connection object
-	 * @param prefix used defined prefix
-	 * @author Simham
-	 * used to create the Database Event table with the prefix specified by user and is run only once
-	 */
-	private static void create_DB_Event_Table(Connection con,String prefix) {
-		// TODO Auto-generated method stub
-		Statement statement = null;
-		@SuppressWarnings("unused")
-		int done;
-		try {
-			statement = con.createStatement();
-			done = statement.executeUpdate("CREATE TABLE "+prefix+"_db_event("+
-					"event_id int(10) unsigned NOT NULL,"+
-					"db_event_id int(10) unsigned NOT NULL,"+
-					"event_type varchar(20) NOT NULL,"+
-					"status int(1) unsigned NOT NULL,"+
-					"table_name varchar(50) NOT NULL,"+
-					"PRIMARY KEY (db_event_id),"+
-					"FOREIGN KEY (event_id) REFERENCES events(event_id))"+
-					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
-			System.out.println("Successfully DB_Event_Table table created!!");
-
-		} catch (SQLException ex) {
-			System.out.println("DB_Event_Table() while running sql:"+ ex);
-		} finally {
-			close(statement);
-		}		
-	}
-
-	// function to create master table for storing event
-	private static void create_Event_Table(Connection con,String prefix) {
-		// TODO Auto-generated method stub
-		Statement statement = null;
-		@SuppressWarnings("unused")
-		int done;
-		try {
-			statement = con.createStatement();
-			done = statement.executeUpdate("CREATE TABLE "+prefix+"_events(" +
-					"event_id int(10) unsigned NOT NULL,"
-					+"event_name varchar(100) NOT NULL,"
-					+"event_type varchar(10) unsigned NOT NULL,"
-					+"PRIMARY KEY (event_id))ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
-			System.out.println("Successfully Event table created!!");
-
-		} catch (SQLException ex) {
-			System.out.println("Event_table() while running sql:"+ ex);
-		} finally {
-			close(statement);
-		}		
-	}
-
-
-	// function to close the connection of database
-	public static void close(Connection connection) {
-		if (connection == null) {
-			return;
-		}
-		try {
-			if (connection.isClosed()) {
-				connection = null;
-			} else {
-				try {
-					connection.close();
-					System.out.println("Connection is closed");
-					connection = null;
-				} catch (SQLException ex) {
-					System.out.println("Connection Cannot be closed:"+ex);
-				}
-			}
-		} catch (SQLException ex) {
-			System.out.println("Connection Cannot be closed:"+ex);
-		}
-	}
-
-	//function to make the statement null
-	public static void close(Statement statement) {
-		if (statement != null) {
-			try {
-				statement.close();
-				statement = null;
-			} catch (SQLException ex) {
-				System.out.println("In close statement Function:"+ex);
-			}
-		}
-	}
-
-
-	//function to make the result set null
-	public static void close(ResultSet rs) {
-		// return;
-		if (rs != null) {
-			try {
-				rs.close();
-				rs = null;
-			} catch (SQLException ex) {
-				System.out.println("In close Result set Function:"+ex);
-			}
-		}
-	}
-	
+//	//function to store the name of the values and expressions of the column
+//	private static void create_DB_Col_Val(Connection con, String prefix) {
+//		// TODO Auto-generated method stub
+//		Statement statement = null;
+//		@SuppressWarnings("unused")
+//		int done;
+//		try {
+//			statement = con.createStatement();
+//			done = statement.executeUpdate("CREATE TABLE "+prefix+"_column_val("
+//					+"col_id int(5) unsigned NOT NULL,"
+//					+"col_val varchar(30) NOT NULL,"
+//					+"col_exp varchar(50) NOT NULL,"
+//					+"FOREIGN KEY (col_id) REFERENCES col_access(col_id))"
+//					+"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
+//			System.out.println("Successfully Col_Val table created!!");
+//
+//		} catch (SQLException ex) {
+//			System.out.println("DB_Col_val_Table () while running sql:"+ ex);
+//		} finally {
+//			close(statement);
+//		}
+//	}
+//	//function to create the col_access table for storing the columns details
+//	/**
+//	 * @param con Connection Object OF Database
+//	 * @param prefix User Defined Prefix
+//	 * @category				It is defined by the user
+//	 */
+//	private static void create_DB_Col_access_Table(Connection con, String prefix) {
+//		// TODO Auto-generated method stub
+//		Statement statement = null;
+//		@SuppressWarnings("unused")
+//		int done;
+//		try {
+//			statement = con.createStatement();
+//			done = statement.executeUpdate("CREATE TABLE "+prefix+"_col_access("+
+//					"db_event_id int(10) unsigned NOT NULL,"+
+//					"col_id int(5) unsigned NOT NULL,"+
+//					"col_name varchar(30) NOT NULL,"+
+//					"PRIMARY KEY (col_id),"+
+//					"FOREIGN KEY (db_event_id) REFERENCES db_event(db_event_id))"+
+//					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
+//			System.out.println("Successfully Col_access table created!!");
+//
+//		} catch (SQLException ex) {
+//			System.out.println("Col_access_Table () while running sql:"+ ex);
+//		} finally {
+//			close(statement);
+//		}
+//	}
+//
+//	//function  to create the rowfilter database
+//	private static void create_DB_rowfilter(Connection con,String prefix) {
+//		// TODO Auto-generated method stub
+//		Statement statement = null;
+//		@SuppressWarnings("unused")
+//		int done;
+//		try {
+//			statement = con.createStatement();
+//			done = statement.executeUpdate("CREATE TABLE "+prefix+"_rowfilter("+
+//					"db_event_id int(10) unsigned NOT NULL,"+
+//					"row_filter varchar(300)  NOT NULL,"+
+//					"FOREIGN KEY (db_event_id) REFERENCES db_event(db_event_id))"+
+//					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
+//			System.out.println("Successfully rowfilter() created!!");
+//
+//		} catch (SQLException ex) {
+//			System.out.println("rowfilter_table() while running sql:"+ ex);
+//		} finally {
+//			close(statement);
+//		}
+//
+//	}
+//	// function to create the time event information table
+//	private static void create_TIME_Event_Table(Connection con,String prefix) {
+//		// TODO Auto-generated method stub
+//		Statement statement = null;
+//		@SuppressWarnings("unused")
+//		int done;
+//		try {
+//			statement = con.createStatement();
+//			done = statement.executeUpdate("CREATE TABLE "+prefix+"_time_event("+
+//					"event_id int(10) unsigned NOT NULL,"+
+//					"time_event_id int(10) unsigned NOT NULL,"+
+//					"periodic varchar(20) NOT NULL,"+
+//					"time_assigned time NOT NULL,"+
+//					"date_check date NOT NULL,"+
+//					"PRIMARY KEY (time_event_id),"+
+//					" FOREIGN KEY (event_id) REFERENCES events(event_id))"+
+//					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
+//			System.out.println("Successfully TIME_Event_Table created!!");
+//
+//		} catch (SQLException ex) {
+//			System.out.println("TIME_Event_Table() while running sql:"+ ex);
+//		} finally {
+//			close(statement);
+//		}		
+//	}
+//
+//
+//	// function to create database event information table
+//	/**
+//	 * @param con Connection object
+//	 * @param prefix used defined prefix
+//	 * @author Simham
+//	 * used to create the Database Event table with the prefix specified by user and is run only once
+//	 */
+//	private static void create_DB_Event_Table(Connection con,String prefix) {
+//		// TODO Auto-generated method stub
+//		Statement statement = null;
+//		@SuppressWarnings("unused")
+//		int done;
+//		try {
+//			statement = con.createStatement();
+//			done = statement.executeUpdate("CREATE TABLE "+prefix+"_db_event("+
+//					"event_id int(10) unsigned NOT NULL,"+
+//					"db_event_id int(10) unsigned NOT NULL,"+
+//					"event_type varchar(20) NOT NULL,"+
+//					"status int(1) unsigned NOT NULL,"+
+//					"table_name varchar(50) NOT NULL,"+
+//					"PRIMARY KEY (db_event_id),"+
+//					"FOREIGN KEY (event_id) REFERENCES events(event_id))"+
+//					"ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
+//			System.out.println("Successfully DB_Event_Table table created!!");
+//
+//		} catch (SQLException ex) {
+//			System.out.println("DB_Event_Table() while running sql:"+ ex);
+//		} finally {
+//			close(statement);
+//		}		
+//	}
+//
+//	// function to create master table for storing event
+//	private static void create_Event_Table(Connection con,String prefix) {
+//		// TODO Auto-generated method stub
+//		Statement statement = null;
+//		@SuppressWarnings("unused")
+//		int done;
+//		try {
+//			statement = con.createStatement();
+//			done = statement.executeUpdate("CREATE TABLE "+prefix+"_events(" +
+//					"event_id int(10) unsigned NOT NULL,"
+//					+"event_name varchar(100) NOT NULL,"
+//					+"event_type varchar(10) unsigned NOT NULL,"
+//					+"PRIMARY KEY (event_id))ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;");
+//			System.out.println("Successfully Event table created!!");
+//
+//		} catch (SQLException ex) {
+//			System.out.println("Event_table() while running sql:"+ ex);
+//		} finally {
+//			close(statement);
+//		}		
+//	}
+//
+//
+//	// function to close the connection of database
+//	public static void close(Connection connection) {
+//		if (connection == null) {
+//			return;
+//		}
+//		try {
+//			if (connection.isClosed()) {
+//				connection = null;
+//			} else {
+//				try {
+//					connection.close();
+//					System.out.println("Connection is closed");
+//					connection = null;
+//				} catch (SQLException ex) {
+//					System.out.println("Connection Cannot be closed:"+ex);
+//				}
+//			}
+//		} catch (SQLException ex) {
+//			System.out.println("Connection Cannot be closed:"+ex);
+//		}
+//	}
+//
+//	//function to make the statement null
+//	public static void close(Statement statement) {
+//		if (statement != null) {
+//			try {
+//				statement.close();
+//				statement = null;
+//			} catch (SQLException ex) {
+//				System.out.println("In close statement Function:"+ex);
+//			}
+//		}
+//	}
+//
+//
+//	//function to make the result set null
+//	public static void close(ResultSet rs) {
+//		// return;
+//		if (rs != null) {
+//			try {
+//				rs.close();
+//				rs = null;
+//			} catch (SQLException ex) {
+//				System.out.println("In close Result set Function:"+ex);
+//			}
+//		}
+//	}
+//	
+        
 }
